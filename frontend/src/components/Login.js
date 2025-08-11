@@ -1,0 +1,166 @@
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+import { useLanguage } from "../contexts/LanguageContext";
+import { translations } from "../translations";
+import { LogIn, FileText, MessageSquare, ArrowLeft } from "lucide-react";
+import LanguageSwitcher from "./LanguageSwitcher";
+
+function Login() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const { login } = useAuth();
+  const { language } = useLanguage();
+  const t = translations[language];
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    const result = await login(username, password);
+
+    if (result.success) {
+      navigate("/dashboard");
+    } else {
+      setError(result.error);
+    }
+
+    setLoading(false);
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div className="text-center">
+          <div className="flex justify-between items-center mb-4">
+            <Link
+              to="/"
+              className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4 mr-1" />
+              {t.login.backToHome}
+            </Link>
+            <LanguageSwitcher />
+          </div>
+        </div>
+        <div>
+          <div className="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-primary-100">
+            <FileText className="h-8 w-8 text-primary-600" />
+          </div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            {t.login.title}
+          </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            {t.login.subtitle}
+          </p>
+        </div>
+
+        <div className="bg-white py-8 px-6 shadow rounded-lg sm:px-10">
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div>
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium text-gray-700"
+              >
+                {t.login.username}
+              </label>
+              <div className="mt-1">
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="input-field"
+                  placeholder={t.login.usernamePlaceholder}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                {t.login.password}
+              </label>
+              <div className="mt-1">
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="input-field"
+                  placeholder={t.login.passwordPlaceholder}
+                />
+              </div>
+            </div>
+
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                {error}
+              </div>
+            )}
+
+            <div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn-primary w-full flex justify-center items-center"
+              >
+                {loading ? (
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                ) : (
+                  <>
+                    <LogIn className="h-5 w-5 mr-2" />
+                    {t.login.signIn}
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">
+                  {t.login.demoMode}
+                </span>
+              </div>
+            </div>
+            <div className="mt-6 text-center text-sm text-gray-600">
+              <p>{t.login.demoDescription}</p>
+              <p className="mt-1">{t.login.tryCredentials}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-center">
+          <div className="flex items-center justify-center space-x-4 text-sm text-gray-500">
+            <div className="flex items-center">
+              <FileText className="h-4 w-4 mr-1" />
+              {t.login.pdfUpload}
+            </div>
+            <div className="flex items-center">
+              <MessageSquare className="h-4 w-4 mr-1" />
+              {t.login.aiChat}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Login;
