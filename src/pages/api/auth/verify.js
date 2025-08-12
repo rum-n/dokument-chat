@@ -1,14 +1,15 @@
-import { requireAuth } from '../../../lib/services/auth';
+import { authenticateRequest } from "../../../lib/services/auth";
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
   }
+
   try {
-    await requireAuth(req, res, () => {
-      res.json({ valid: true, user: req.user });
-    });
+    const user = await authenticateRequest(req);
+    res.json({ valid: true, user });
   } catch (error) {
-    res.status(401).json({ error: 'Invalid token' });
+    console.error("Auth verify error:", error);
+    res.status(401).json({ error: "Authentication required" });
   }
 }

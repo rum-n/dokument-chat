@@ -9,6 +9,20 @@ import React, {
 } from "react";
 import axios from "axios";
 
+// Set up axios interceptor to include auth token
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 interface User {
   id: string;
   email: string;
@@ -52,7 +66,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const token = localStorage.getItem("token");
       if (token) {
-        const response = await axios.post("/auth/verify");
+        const response = await axios.post("/api/auth/verify");
         setUser(response.data.user);
         setIsAuthenticated(true);
       }
