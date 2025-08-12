@@ -1,8 +1,10 @@
-import path from 'path';
-import dotenv from 'dotenv';
+import path from "path";
+import dotenv from "dotenv";
 
-// Load environment variables from .env.local
-dotenv.config({ path: path.join(process.cwd(), '.env.local') });
+// Load environment variables - works for both local and Vercel
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config({ path: path.join(process.cwd(), ".env.local") });
+}
 
 interface MistralConfig {
   apiKey: string | undefined;
@@ -76,7 +78,9 @@ const config: Config = {
   // File Upload Settings
   upload: {
     maxFileSizeMB: parseInt(process.env.MAX_FILE_SIZE_MB || "20"),
-    uploadDir: process.env.UPLOAD_DIR || "./uploads",
+    uploadDir:
+      process.env.UPLOAD_DIR ||
+      (process.env.NODE_ENV === "production" ? "/tmp" : "./uploads"),
     chunkSize: parseInt(process.env.CHUNK_SIZE || "500"),
     chunkOverlap: parseInt(process.env.CHUNK_OVERLAP || "50"),
   },
@@ -107,9 +111,16 @@ const requiredEnvVars = ["MISTRAL_API_KEY", "JWT_SECRET"];
 const missingVars = requiredEnvVars.filter((varName) => !process.env[varName]);
 
 if (missingVars.length > 0) {
-  console.warn(
+  console.error(
     `Missing required environment variables: ${missingVars.join(", ")}`
   );
+
+  // In production, throw error for missing required vars
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      `Missing required environment variables: ${missingVars.join(", ")}`
+    );
+  }
 }
 
 export default config;

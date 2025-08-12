@@ -3,98 +3,98 @@
 import React from "react";
 import Link from "next/link";
 import {
-	FileText,
-	MessageCircle,
-	Globe,
-	Shield,
-	Zap,
-	Users,
-	ArrowRight,
-	CheckCircle,
-	BookOpen,
-	Search,
+  FileText,
+  MessageCircle,
+  Globe,
+  Shield,
+  Zap,
+  Users,
+  ArrowRight,
+  CheckCircle,
+  BookOpen,
+  Search,
 } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
 import { translations } from "../translations";
 import LanguageSwitcher from "./LanguageSwitcher";
 
 const LandingPage = (): React.JSX.Element => {
-	const { language } = useLanguage();
-	const t = translations[language];
+  const { language } = useLanguage();
+  const t = translations[language];
 
-	return (
-		<div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-			{/* Navigation */}
-			<nav className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
-				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-					<div className="flex justify-between items-center h-16">
-						<div className="flex items-center space-x-2">
-							<div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-								<FileText className="w-5 h-5 text-white" />
-							</div>
-							<span className="text-xl font-bold text-gray-900">
-								Dokument Chat
-							</span>
-						</div>
-						<div className="flex items-center space-x-4">
-							<LanguageSwitcher />
-							<button
-								onClick={() =>
-									document
-										?.getElementById("use-cases")
-										?.scrollIntoView({ behavior: "smooth" })
-								}
-								className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-							>
-								{language === "bg" ? "Приложения" : "Use Cases"}
-							</button>
-							<button
-								onClick={() =>
-									document
-										?.getElementById("pricing")
-										?.scrollIntoView({ behavior: "smooth" })
-								}
-								className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-							>
-								{language === "bg" ? "Цени" : "Pricing"}
-							</button>
-											<Link
-												href="/login"
-												className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-											>
-												{t.nav.signIn}
-											</Link>
-											<Link
-												href="/login"
-												className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl"
-											>
-												{t.nav.getStarted}
-											</Link>
-						</div>
-					</div>
-				</div>
-			</nav>
-			{/* Hero Section */}
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Navigation */}
+      <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center shadow-lg">
+                <FileText className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xl font-bold text-gray-900">
+                Dokument Chat
+              </span>
+            </div>
+            <div className="flex items-center space-x-4">
+              <LanguageSwitcher />
+              <button
+                onClick={() =>
+                  document
+                    ?.getElementById("use-cases")
+                    ?.scrollIntoView({ behavior: "smooth" })
+                }
+                className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200"
+              >
+                {language === "bg" ? "Приложения" : "Use Cases"}
+              </button>
+              <button
+                onClick={() =>
+                  document
+                    ?.getElementById("pricing")
+                    ?.scrollIntoView({ behavior: "smooth" })
+                }
+                className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200"
+              >
+                {language === "bg" ? "Цени" : "Pricing"}
+              </button>
+              <Link
+                href="/login"
+                className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200"
+              >
+                {t.nav.signIn}
+              </Link>
+              <Link
+                href="/signup"
+                className="bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              >
+                {t.nav.getStarted}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+      {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
           <div className="text-center">
             <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-gray-900 mb-6">
               {t.hero.title}
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-700 mb-8 max-w-3xl mx-auto">
               {t.hero.subtitle}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link
                 href="/login"
-                className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-2"
+                className="bg-primary-600 text-white px-8 py-4 rounded-lg text-lg font-bold hover:bg-primary-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center space-x-2"
               >
                 <span>{t.hero.startChatting}</span>
                 <ArrowRight className="w-5 h-5" />
               </Link>
-              <button className="text-gray-600 hover:text-gray-900 px-6 py-4 rounded-xl text-lg font-medium border-2 border-gray-300 hover:border-gray-400 transition-all duration-200 flex items-center space-x-2">
+              <button className="text-gray-700 hover:text-primary-600 px-6 py-4 rounded-lg text-lg font-semibold border-2 border-gray-300 hover:border-primary-500 transition-all duration-200 flex items-center space-x-2 hover:bg-primary-50">
                 <span>{t.hero.watchDemo}</span>
-                <div className="w-5 h-5 bg-gray-600 rounded-full flex items-center justify-center">
+                <div className="w-5 h-5 bg-primary-600 rounded-full flex items-center justify-center">
                   <div className="w-0 h-0 border-l-[6px] border-l-white border-t-[4px] border-t-transparent border-b-[4px] border-b-transparent ml-0.5"></div>
                 </div>
               </button>
@@ -108,9 +108,9 @@ const LandingPage = (): React.JSX.Element => {
             <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-4xl mx-auto">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                 <div>
-                  <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 mb-6">
+                  <div className="bg-primary-100 rounded-lg p-6 mb-6 border-2 border-primary-300">
                     <div className="flex items-center space-x-3 mb-4">
-                      <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                      <div className="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center shadow-lg">
                         <FileText className="w-6 h-6 text-white" />
                       </div>
                       <div>
@@ -132,10 +132,8 @@ const LandingPage = (): React.JSX.Element => {
                 <div>
                   <div className="bg-gray-50 rounded-xl p-6">
                     <div className="flex items-start space-x-3 mb-4">
-                      <div className="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span className="text-white text-sm font-medium">
-                          U
-                        </span>
+                      <div className="w-8 h-8 bg-success-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
+                        <span className="text-white text-sm font-bold">U</span>
                       </div>
                       <div className="bg-white rounded-lg p-3 shadow-sm">
                         <p className="text-gray-800">
@@ -146,17 +144,15 @@ const LandingPage = (): React.JSX.Element => {
                       </div>
                     </div>
                     <div className="flex items-start space-x-3">
-                      <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span className="text-white text-sm font-medium">
-                          AI
-                        </span>
+                      <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg">
+                        <span className="text-white text-sm font-bold">AI</span>
                       </div>
-                      <div className="bg-blue-50 rounded-lg p-3 shadow-sm">
-                        <p className="text-gray-800">
+                      <div className="bg-primary-100 rounded-lg p-3 shadow-md">
+                        <p className="text-gray-900">
                           {language === "bg"
                             ? "Основната тема на документа е... "
                             : "The main topic of the document is... "}
-                          <span className="text-blue-600 underline">
+                          <span className="text-primary-700 underline font-semibold">
                             [Page 1]
                           </span>
                         </p>
@@ -174,7 +170,7 @@ const LandingPage = (): React.JSX.Element => {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
               {t.features.title}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -183,21 +179,21 @@ const LandingPage = (): React.JSX.Element => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-8 hover:shadow-lg transition-all duration-200">
-              <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center mb-6">
+            <div className="bg-primary-50 rounded-xl p-8 hover:shadow-lg transition-all duration-200 border border-primary-100">
+              <div className="w-12 h-12 bg-primary-600 rounded-lg flex items-center justify-center mb-6 shadow-md">
                 <FileText className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">
                 {t.features.smartPdf.title}
               </h3>
               <p className="text-gray-600">{t.features.smartPdf.description}</p>
             </div>
 
-            <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-8 hover:shadow-lg transition-all duration-200">
-              <div className="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center mb-6">
+            <div className="bg-accent-50 rounded-xl p-8 hover:shadow-lg transition-all duration-200 border border-accent-100">
+              <div className="w-12 h-12 bg-accent-500 rounded-lg flex items-center justify-center mb-6 shadow-md">
                 <MessageCircle className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">
                 {t.features.naturalChat.title}
               </h3>
               <p className="text-gray-600">
@@ -205,11 +201,11 @@ const LandingPage = (): React.JSX.Element => {
               </p>
             </div>
 
-            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-8 hover:shadow-lg transition-all duration-200">
-              <div className="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center mb-6">
+            <div className="bg-success-50 rounded-xl p-8 hover:shadow-lg transition-all duration-200 border border-success-100">
+              <div className="w-12 h-12 bg-success-500 rounded-lg flex items-center justify-center mb-6 shadow-md">
                 <Globe className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">
                 {t.features.multilingual.title}
               </h3>
               <p className="text-gray-600">
@@ -217,11 +213,11 @@ const LandingPage = (): React.JSX.Element => {
               </p>
             </div>
 
-            <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-8 hover:shadow-lg transition-all duration-200">
-              <div className="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center mb-6">
+            <div className="bg-warning-50 rounded-xl p-8 hover:shadow-lg transition-all duration-200 border border-warning-100">
+              <div className="w-12 h-12 bg-warning-500 rounded-lg flex items-center justify-center mb-6 shadow-md">
                 <Search className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">
                 {t.features.smartSearch.title}
               </h3>
               <p className="text-gray-600">
@@ -229,21 +225,21 @@ const LandingPage = (): React.JSX.Element => {
               </p>
             </div>
 
-            <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-8 hover:shadow-lg transition-all duration-200">
-              <div className="w-12 h-12 bg-red-600 rounded-lg flex items-center justify-center mb-6">
+            <div className="bg-info-50 rounded-xl p-8 hover:shadow-lg transition-all duration-200 border border-info-100">
+              <div className="w-12 h-12 bg-info-500 rounded-lg flex items-center justify-center mb-6 shadow-md">
                 <Shield className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">
                 {t.features.secure.title}
               </h3>
               <p className="text-gray-600">{t.features.secure.description}</p>
             </div>
 
-            <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-8 hover:shadow-lg transition-all duration-200">
-              <div className="w-12 h-12 bg-indigo-600 rounded-lg flex items-center justify-center mb-6">
+            <div className="bg-premium-50 rounded-xl p-8 hover:shadow-lg transition-all duration-200 border border-premium-100">
+              <div className="w-12 h-12 bg-premium-500 rounded-lg flex items-center justify-center mb-6 shadow-md">
                 <Zap className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">
                 {t.features.fast.title}
               </h3>
               <p className="text-gray-600">{t.features.fast.description}</p>
@@ -256,7 +252,7 @@ const LandingPage = (): React.JSX.Element => {
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
               {t.howItWorks.title}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -266,30 +262,30 @@ const LandingPage = (): React.JSX.Element => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-md">
                 <span className="text-white text-2xl font-bold">1</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">
                 {t.howItWorks.step1.title}
               </h3>
               <p className="text-gray-600">{t.howItWorks.step1.description}</p>
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 bg-accent-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-md">
                 <span className="text-white text-2xl font-bold">2</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">
                 {t.howItWorks.step2.title}
               </h3>
               <p className="text-gray-600">{t.howItWorks.step2.description}</p>
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 bg-success-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-md">
                 <span className="text-white text-2xl font-bold">3</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+              <h3 className="text-xl font-semibold text-gray-800 mb-4">
                 {t.howItWorks.step3.title}
               </h3>
               <p className="text-gray-600">{t.howItWorks.step3.description}</p>
@@ -733,8 +729,8 @@ const LandingPage = (): React.JSX.Element => {
                   href="/login"
                   className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 ${
                     t.pricing.ultimate.popular
-                      ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl"
-                      : "bg-gray-100 text-gray-900 hover:bg-gray-200"
+                      ? "bg-primary-600 text-white hover:bg-primary-700 shadow-md hover:shadow-lg"
+                      : "bg-gray-100 text-gray-800 hover:bg-gray-200"
                   }`}
                 >
                   {t.pricing.ultimate.button}
@@ -746,7 +742,7 @@ const LandingPage = (): React.JSX.Element => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600">
+      <section className="py-20 bg-primary-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
             {t.cta.title}
@@ -859,8 +855,8 @@ const LandingPage = (): React.JSX.Element => {
           </div>
         </div>
       </footer>
-		</div>
-	);
+    </div>
+  );
 };
 
 export default LandingPage;

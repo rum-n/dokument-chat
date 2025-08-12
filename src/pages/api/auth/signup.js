@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   try {
     const { email, password } = req.body;
 
-    // Validate input
+    // Validate required fields
     if (!email || !password) {
       return res.status(400).json({ error: "Email and password are required" });
     }
@@ -20,25 +20,39 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Server configuration error" });
     }
 
-    // Authenticate user
-    const user = await UserService.authenticateUser(email, password);
-    if (!user) {
-      return res.status(401).json({ error: "Incorrect email or password" });
-    }
+    // Create user
+    const user = await UserService.createUser({
+      email,
+      password,
+    });
 
     // Create access token
     const accessToken = createAccessToken(user);
 
-    res.json({
+    res.status(201).json({
       access_token: accessToken,
       token_type: "bearer",
       user,
-      message: "Login successful",
+      message: "User created successfully",
     });
   } catch (error) {
-    console.error("Login error:", error);
+    console.error("Signup error:", error);
 
-    // Provide more specific error messages
+    // Handle specific errors
+    if (
+      error.message.includes("already exists") ||
+      error.message.includes("already taken")
+    ) {
+      return res.status(409).json({ error: error.message });
+    }
+
+    if (
+      error.message.includes("Invalid email") ||
+      error.message.includes("Password must be")
+    ) {
+      return res.status(400).json({ error: error.message });
+    }
+
     if (error.message.includes("JWT secret")) {
       return res
         .status(500)

@@ -81,20 +81,42 @@ interface TranslationStrings {
     copyright: string;
     comingSoon: string;
   };
-  login: {
-    backToHome: string;
+  auth: {
+    // Login
     title: string;
     subtitle: string;
-    username: string;
+    email: string;
     password: string;
-    usernamePlaceholder: string;
-    passwordPlaceholder: string;
     signIn: string;
-    demoMode: string;
-    demoDescription: string;
-    tryCredentials: string;
-    pdfUpload: string;
-    aiChat: string;
+    forgotPassword: string;
+    noAccount: string;
+    signUp: string;
+    backToHome: string;
+    emailPlaceholder: string;
+    passwordPlaceholder: string;
+    demoCredentials: string;
+    demoEmail: string;
+    demoPassword: string;
+    signInWithDemo: string;
+    or: string;
+
+    // Signup
+    createAccount: string;
+    signupSubtitle: string;
+    confirmPassword: string;
+    confirmPasswordPlaceholder: string;
+    alreadyHaveAccount: string;
+
+    // Validation
+    requiredFields: string;
+    passwordsDontMatch: string;
+    passwordTooShort: string;
+    invalidEmail: string;
+
+    // Messages
+    signupSuccess: string;
+    signupFailed: string;
+    loginFailed: string;
   };
   useCases: {
     title: string;
@@ -277,22 +299,44 @@ export const translations: Translations = {
       comingSoon: "(coming soon)",
     },
 
-    // Login Page
-    login: {
-      backToHome: "Back to Home",
-      title: "Dokument Chat",
-      subtitle: "Upload PDFs and chat with AI",
-      username: "Username",
+    // Auth Section
+    auth: {
+      // Login
+      title: "Welcome Back",
+      subtitle: "Sign in to your account to continue",
+      email: "Email",
       password: "Password",
-      usernamePlaceholder: "Enter any username (demo)",
-      passwordPlaceholder: "Enter any password (demo)",
-      signIn: "Sign in",
-      demoMode: "Demo Mode",
-      demoDescription:
-        "For MVP demonstration, any username and password will work.",
-      tryCredentials: "Try: demo / demo",
-      pdfUpload: "PDF Upload",
-      aiChat: "AI Chat",
+      signIn: "Sign In",
+      forgotPassword: "Forgot your password?",
+      noAccount: "Don't have an account?",
+      signUp: "Sign up",
+      backToHome: "Back to Home",
+      emailPlaceholder: "Enter your email",
+      passwordPlaceholder: "Enter your password",
+      demoCredentials: "Demo Credentials",
+      demoEmail: "demo@example.com",
+      demoPassword: "demo123",
+      signInWithDemo: "Sign in with Demo",
+      or: "or",
+
+      // Signup
+      createAccount: "Create Account",
+      signupSubtitle:
+        "Join Dokument Chat and start chatting with your documents",
+      confirmPassword: "Confirm Password",
+      confirmPasswordPlaceholder: "Confirm your password",
+      alreadyHaveAccount: "Already have an account?",
+
+      // Validation
+      requiredFields: "Please fill in all required fields",
+      passwordsDontMatch: "Passwords don't match",
+      passwordTooShort: "Password must be at least 6 characters long",
+      invalidEmail: "Please enter a valid email address",
+
+      // Messages
+      signupSuccess: "Account created successfully! Redirecting...",
+      signupFailed: "Failed to create account. Please try again.",
+      loginFailed: "Login failed. Please check your credentials.",
     },
 
     // Use Cases Section
@@ -542,22 +586,44 @@ export const translations: Translations = {
       comingSoon: "(скоро)",
     },
 
-    // Login Page
-    login: {
-      backToHome: "Обратно към Началото",
-      title: "Dokument Chat",
-      subtitle: "Качете PDF-и и започнете чат с ИИ на български или английски",
-      username: "Потребителско име",
+    // Auth Section
+    auth: {
+      // Login
+      title: "Добре дошли отново",
+      subtitle: "Влезте в профила си, за да продължите",
+      email: "Имейл",
       password: "Парола",
-      usernamePlaceholder: "Въведете потребителско име (демо)",
-      passwordPlaceholder: "Въведете парола (демо)",
       signIn: "Вход",
-      demoMode: "Демо Режим",
-      demoDescription:
-        "За MVP демонстрация, всяко потребителско име и парола ще работи.",
-      tryCredentials: "Опитайте: demo / demo",
-      pdfUpload: "PDF Качване",
-      aiChat: "ИИ Чат",
+      forgotPassword: "Забравена парола?",
+      noAccount: "Нямате акаунт?",
+      signUp: "Регистрация",
+      backToHome: "Обратно към Началото",
+      emailPlaceholder: "Въведете вашия имейл",
+      passwordPlaceholder: "Въведете вашата парола",
+      demoCredentials: "Демо Данни",
+      demoEmail: "demo@example.com",
+      demoPassword: "demo123",
+      signInWithDemo: "Вход с Демо",
+      or: "или",
+
+      // Signup
+      createAccount: "Създаване на Акаунт",
+      signupSubtitle:
+        "Присъединете се към Dokument Chat и започнете чат с вашите документи",
+      confirmPassword: "Потвърди парола",
+      confirmPasswordPlaceholder: "Потвърдете вашата парола",
+      alreadyHaveAccount: "Вече имате акаунт?",
+
+      // Validation
+      requiredFields: "Моля, попълнете всички задължителни полета",
+      passwordsDontMatch: "Паролите не съвпадат",
+      passwordTooShort: "Паролата трябва да бъде поне 6 символа",
+      invalidEmail: "Моля, въведете валиден имейл адрес",
+
+      // Messages
+      signupSuccess: "Акаунтът е създаден успешно! Пренасочване...",
+      signupFailed: "Неуспешно създаване на акаунт. Моля, опитайте отново.",
+      loginFailed: "Неуспешен вход. Моля, проверете данните си.",
     },
 
     // Use Cases Section
