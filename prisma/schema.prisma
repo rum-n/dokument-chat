@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  isActive     Boolean   @default(true)
+  isDemo       Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  lastLoginAt  DateTime?
+
+  // Relations
+  pdfs PDF[]
+
+  @@map("users")
+}
+
+model PDF {
+  id          String   @id @default(cuid())
+  filename    String
+  originalName String
+  mimeType    String
+  size        Int
+  uploadPath  String
+  language    String?
+  pageCount   Int?
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user   User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chunks PDFChunk[]
+  
+  @@map("pdfs")
+}
+
+model PDFChunk {
+  id         String @id @default(cuid())
+  pdfId      String
+  chunkId    String @unique
+  pageNumber Int
+  text       String @db.Text
+  createdAt  DateTime @default(now())
+
+  // Relations
+  pdf PDF @relation(fields: [pdfId], references: [id], onDelete: Cascade)
+
+  @@map("pdf_chunks")
+}

@@ -1,15 +1,28 @@
 import bcrypt from "bcryptjs";
+import { v4 as uuidv4 } from "uuid";
 import { User, CreateUserData, UserProfile } from "../models/User";
-import { prisma } from "../prisma";
+
+// In-memory storage for demo (replace with database in production)
+const users: Map<string, User> = new Map();
+
+// Create demo user
+const demoUser: User = {
+  id: "demo-1",
+  email: "demo@example.com",
+  passwordHash: bcrypt.hashSync("demo123", 10),
+  isActive: true,
+  isDemo: true,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+
+users.set(demoUser.id, demoUser);
+users.set(demoUser.email, demoUser);
 
 export class UserService {
   static async createUser(userData: CreateUserData): Promise<UserProfile> {
     // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email: userData.email.toLowerCase() }
-    });
-
-    if (existingUser) {
+    if (users.has(userData.email)) {
       throw new Error("User with this email already exists");
     }
 
@@ -28,13 +41,18 @@ export class UserService {
     const passwordHash = await bcrypt.hash(userData.password, 12);
 
     // Create user
-    const user = await prisma.user.create({
-      data: {
-        email: userData.email.toLowerCase(),
-        passwordHash,
-        isActive: true,
-      }
-    });
+    const user: User = {
+      id: uuidv4(),
+      email: userData.email.toLowerCase(),
+      passwordHash,
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
+    // Store user
+    users.set(user.id, user);
+    users.set(user.email, user);
 
     return this.getUserProfile(user);
   }
@@ -43,9 +61,7 @@ export class UserService {
     email: string,
     password: string
   ): Promise<UserProfile | null> {
-    const user = await prisma.user.findUnique({
-      where: { email: email.toLowerCase() }
-    });
+    const user = users.get(email.toLowerCase());
 
     if (!user || !user.isActive) {
       return null;
@@ -57,27 +73,19 @@ export class UserService {
     }
 
     // Update last login
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { lastLoginAt: new Date() }
-    });
+    user.lastLoginAt = new Date();
+    user.updatedAt = new Date();
 
     return this.getUserProfile(user);
   }
 
   static async getUserById(id: string): Promise<UserProfile | null> {
-    const user = await prisma.user.findUnique({
-      where: { id }
-    });
-    
+    const user = users.get(id);
     return user ? this.getUserProfile(user) : null;
   }
 
   static async getUserByEmail(email: string): Promise<UserProfile | null> {
-    const user = await prisma.user.findUnique({
-      where: { email: email.toLowerCase() }
-    });
-    
+    const user = users.get(email.toLowerCase());
     return user ? this.getUserProfile(user) : null;
   }
 
@@ -85,13 +93,13 @@ export class UserService {
     id: string,
     updates: Partial<UserProfile>
   ): Promise<UserProfile> {
-    const user = await prisma.user.update({
-      where: { id },
-      data: {
-        // Only allow updating certain fields
-        ...(updates.isActive !== undefined && { isActive: updates.isActive }),
-      }
-    });
+    const user = users.get(id);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // Update allowed fields
+    user.updatedAt = new Date();
 
     return this.getUserProfile(user);
   }
@@ -101,10 +109,7 @@ export class UserService {
     currentPassword: string,
     newPassword: string
   ): Promise<void> {
-    const user = await prisma.user.findUnique({
-      where: { id }
-    });
-
+    const user = users.get(id);
     if (!user) {
       throw new Error("User not found");
     }
@@ -123,21 +128,12 @@ export class UserService {
       throw new Error("Password must be at least 6 characters long");
     }
 
-    // Hash new password and update
-    const passwordHash = await bcrypt.hash(newPassword, 12);
-    await prisma.user.update({
-      where: { id },
-      data: { passwordHash }
-    });
+    // Hash new password
+    user.passwordHash = await bcrypt.hash(newPassword, 12);
+    user.updatedAt = new Date();
   }
 
-  static async deleteUser(id: string): Promise<void> {
-    await prisma.user.delete({
-      where: { id }
-    });
-  }
-
-  private static getUserProfile(user: any): UserProfile {
+  private static getUserProfile(user: User): UserProfile {
     return {
       id: user.id,
       email: user.email,
@@ -145,27 +141,5 @@ export class UserService {
       createdAt: user.createdAt,
       lastLoginAt: user.lastLoginAt,
     };
-  }
-
-  // Seed demo user for development
-  static async createDemoUser(): Promise<UserProfile> {
-    const existingDemo = await prisma.user.findFirst({
-      where: { isDemo: true }
-    });
-
-    if (existingDemo) {
-      return this.getUserProfile(existingDemo);
-    }
-
-    const demoUser = await prisma.user.create({
-      data: {
-        email: "demo@example.com",
-        passwordHash: await bcrypt.hash("demo123", 12),
-        isActive: true,
-        isDemo: true,
-      }
-    });
-
-    return this.getUserProfile(demoUser);
   }
 }
