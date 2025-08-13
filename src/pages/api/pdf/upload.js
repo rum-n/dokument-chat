@@ -1,4 +1,4 @@
-import formidable from "formidable";
+import { IncomingForm } from "formidable";
 import fs from "fs-extra";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
@@ -27,7 +27,11 @@ export default async function handler(req, res) {
     // Initialize database
     await initQdrant();
 
-    const form = new formidable.IncomingForm({
+    // Ensure upload directory exists
+    await fs.ensureDir(appConfig.upload.uploadDir);
+    console.log("Upload directory:", appConfig.upload.uploadDir);
+
+    const form = new IncomingForm({
       uploadDir: appConfig.upload.uploadDir,
       maxFileSize: appConfig.upload.maxFileSizeMB * 1024 * 1024,
       keepExtensions: true,
@@ -46,7 +50,21 @@ export default async function handler(req, res) {
 
       try {
         const pdfId = uuidv4();
-        const filePath = file.filepath || file.path;
+
+        // Debug file object
+        console.log("File object:", JSON.stringify(file, null, 2));
+
+        // Try different possible file path properties
+        const filePath =
+          file.filepath ||
+          file.path ||
+          file.tempFilePath ||
+          (Array.isArray(file) ? file[0].filepath : null);
+
+        if (!filePath) {
+          console.error("Could not find file path in file object:", file);
+          return res.status(400).json({ error: "Invalid file upload" });
+        }
 
         // Process PDF
         const result = await pdfService.processPDF(filePath, pdfId);

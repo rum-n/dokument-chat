@@ -18,11 +18,11 @@
 
 @layer base {
   html {
-    font-family: "Inter", system-ui, sans-serif;
+    font-family: "Montserrat", system-ui, sans-serif;
   }
 
   body {
-    @apply bg-white text-gray-900;
+    @apply bg-white text-gray-900 font-montserrat;
   }
 }
 

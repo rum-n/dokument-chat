@@ -1,5 +1,5 @@
 import { createAccessToken } from "../../../lib/services/auth";
-import { UserService } from "../../../lib/services/userService";
+import { UserService } from "../../../lib/services/userService.prisma";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {

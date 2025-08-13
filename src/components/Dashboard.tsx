@@ -32,7 +32,7 @@ function Dashboard(): React.JSX.Element {
   const fetchPDFs = async () => {
     try {
       setLoading(true);
-      const response = await fetch("/pdf/list", {
+      const response = await fetch("/api/pdf/list", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
