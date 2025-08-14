@@ -26,7 +26,14 @@ let qdrantClient: QdrantClient | null = null;
 
 export async function initQdrant(): Promise<void> {
   try {
-    qdrantClient = new QdrantClient({ url: config.qdrant.url });
+    const clientConfig: any = { url: config.qdrant.url };
+    
+    // Add API key if provided (for Qdrant Cloud)
+    if (config.qdrant.apiKey) {
+      clientConfig.apiKey = config.qdrant.apiKey;
+    }
+    
+    qdrantClient = new QdrantClient(clientConfig);
 
     // Check if collection exists
     const collections = await qdrantClient.getCollections();

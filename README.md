@@ -1,8 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is a [Next.js](https://nextjs.org) project that allows users to upload PDF documents and chat with them using AI.
+
+## Prerequisites
+
+- Node.js 18+
+- Docker (for local Qdrant development)
+- Mistral AI API key
+- PostgreSQL database
+
+## Vector Database Setup
+
+This application requires Qdrant vector database. You have two options:
+
+### 🔧 **Local Development (Current Setup)**
+```bash
+# Start local Qdrant with Docker
+./qdrant.sh start
+```
+
+### ☁️ **Production/Cloud (Recommended)**
+For production deployment, see **[QDRANT_DEPLOYMENT.md](./QDRANT_DEPLOYMENT.md)** for cloud options including:
+- Qdrant Cloud (managed service)
+- Railway, DigitalOcean, AWS, etc.
 
 ## Getting Started
 
-First, run the development server:
+1. **Start Qdrant Vector Database:**
+   ```bash
+   # Using the provided script
+   ./qdrant.sh start
+   
+   # Or using Docker directly
+   docker run -d --name qdrant -p 6333:6333 -p 6334:6334 -v "$(pwd)/qdrant_storage:/qdrant/storage" qdrant/qdrant
+   ```
+
+2. **Configure Environment Variables:**
+   Make sure your `.env.local` file contains:
+   ```bash
+   QDRANT_URL="http://localhost:6333"
+   QDRANT_COLLECTION_NAME="pdf_chunks_mistral"
+   MISTRAL_API_KEY="your-mistral-api-key"
+   JWT_SECRET="your-jwt-secret"
+   ```
+
+3. **Run the development server:**
 
 ```bash
 npm run dev
