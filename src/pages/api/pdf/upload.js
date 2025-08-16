@@ -8,6 +8,7 @@ import aiService from "../../../lib/services/aiService";
 import { storeChunks, initQdrant } from "../../../lib/services/database";
 import { addPDFMetadata } from "../../../lib/services/metadata";
 import appConfig from "../../../lib/config";
+import subscriptionService from "../../../lib/services/subscriptionService";
 
 export const config = {
   api: {
@@ -49,10 +50,44 @@ export default async function handler(req, res) {
       }
 
       try {
+        // Check subscription limits
+        const usageStatus = await subscriptionService.getCurrentUsage(user.id);
+
+        if (!usageStatus.canUpload) {
+          return res.status(403).json({
+            error:
+              "Upload limit reached for today. Please upgrade your subscription for more uploads.",
+          });
+        }
+
+        // Get file size from various possible properties
+        const fileSizeBytes = file.size || file.bytes || 0;
+
+        // Debug file size
+        console.log("File size in bytes:", fileSizeBytes);
+        console.log("File size in MB:", fileSizeBytes / (1024 * 1024));
+
+        // Check file size limit
+        if (
+          !(await subscriptionService.checkFileSizeLimit(
+            user.id,
+            fileSizeBytes
+          ))
+        ) {
+          const limits = await subscriptionService.getSubscriptionLimits(
+            user.id
+          );
+          return res.status(413).json({
+            error: `File size exceeds your plan limit of ${limits.maxFileSizeMB}MB. Please upgrade your subscription.`,
+          });
+        }
+
         const pdfId = uuidv4();
 
         // Debug file object
         console.log("File object:", JSON.stringify(file, null, 2));
+        console.log("File size property:", file.size);
+        console.log("File size type:", typeof file.size);
 
         // Try different possible file path properties
         const filePath =
@@ -92,6 +127,9 @@ export default async function handler(req, res) {
         // Store embeddings in database
         await storeChunks(pdfId, validChunks, embeddings);
 
+        // Record the upload in subscription usage
+        await subscriptionService.recordPdfUpload(user.id);
+
         // Store PDF metadata
         addPDFMetadata({
           pdf_id: pdfId,
@@ -99,7 +137,7 @@ export default async function handler(req, res) {
           total_pages: result.total_pages,
           total_chunks: validChunks.length,
           upload_date: new Date().toISOString(),
-          file_size: file.size,
+          file_size: fileSizeBytes,
           user_id: user.id,
           status: "processed",
         });
@@ -110,6 +148,11 @@ export default async function handler(req, res) {
           total_pages: result.total_pages,
           total_chunks: validChunks.length,
           status: "processed",
+          usage: {
+            remainingUploadsToday: usageStatus.remainingUploadsToday - 1,
+            remainingUploadsThisMonth:
+              usageStatus.remainingUploadsThisMonth - 1,
+          },
         });
       } catch (error) {
         console.error("PDF processing error:", error);

@@ -4,6 +4,9 @@ export interface User {
   passwordHash: string;
   isActive: boolean;
   isDemo?: boolean;
+  subscriptionTier?: "FREE" | "PREMIUM" | "ULTIMATE";
+  subscriptionStartDate?: Date;
+  subscriptionEndDate?: Date;
   createdAt: Date;
   updatedAt: Date;
   lastLoginAt?: Date;
@@ -23,6 +26,9 @@ export interface UserProfile {
   id: string;
   email: string;
   isActive: boolean;
+  subscriptionTier?: "FREE" | "PREMIUM" | "ULTIMATE";
+  subscriptionStartDate?: Date;
+  subscriptionEndDate?: Date;
   createdAt: Date;
   lastLoginAt?: Date;
 }

@@ -618,7 +618,7 @@ const LandingPage = (): React.JSX.Element => {
             >
               {t.pricing.premium.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                  <span className="bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-semibold">
                     {language === "bg" ? "Най-Популярен" : "Most Popular"}
                   </span>
                 </div>
@@ -664,7 +664,7 @@ const LandingPage = (): React.JSX.Element => {
                   href="/login"
                   className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 ${
                     t.pricing.premium.popular
-                      ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl"
+                      ? "bg-blue-600 text-white hover:bg-blue-700 shadow-lg hover:shadow-xl"
                       : "bg-gray-100 text-gray-900 hover:bg-gray-200"
                   }`}
                 >

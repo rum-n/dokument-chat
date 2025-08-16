@@ -10,20 +10,55 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum SubscriptionTier {
+  FREE
+  PREMIUM
+  ULTIMATE
+}
+
 model User {
   id           String    @id @default(cuid())
   email        String    @unique
   passwordHash String
   isActive     Boolean   @default(true)
   isDemo       Boolean   @default(false)
+  
+  // Subscription fields
+  subscriptionTier SubscriptionTier @default(FREE)
+  subscriptionStartDate DateTime?
+  subscriptionEndDate   DateTime?
+  
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   lastLoginAt  DateTime?
 
   // Relations
   pdfs PDF[]
+  subscriptionUsage SubscriptionUsage?
 
   @@map("users")
+}
+
+model SubscriptionUsage {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  month     String   // Format: "YYYY-MM"
+  
+  // Daily limits
+  pdfUploadsToday    Int @default(0)
+  lastUploadDate     DateTime?
+  
+  // Monthly limits
+  questionsThisMonth Int @default(0)
+  pdfUploadsThisMonth Int @default(0)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("subscription_usage")
 }
 
 model PDF {

@@ -1,6 +1,7 @@
 import { authenticateRequest } from "../../../lib/services/auth";
 import aiService from "../../../lib/services/aiService";
 import { searchChunks } from "../../../lib/services/database";
+import subscriptionService from "../../../lib/services/subscriptionService";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -9,6 +10,16 @@ export default async function handler(req, res) {
 
   try {
     const user = await authenticateRequest(req);
+
+    // Check subscription limits for questions
+    const usageStatus = await subscriptionService.getCurrentUsage(user.id);
+
+    if (!usageStatus.canAskQuestion) {
+      return res.status(403).json({
+        error:
+          "Question limit reached for this month. Please upgrade your subscription for more questions.",
+      });
+    }
 
     const { question, pdf_id } = req.body;
     if (!question || typeof question !== "string") {
@@ -74,11 +85,18 @@ export default async function handler(req, res) {
       chunk_ids: ref.chunk_ids,
     }));
 
+    // Record the question in subscription usage
+    await subscriptionService.recordQuestion(user.id);
+
     res.json({
       answer: aiResponse.answer,
       language: aiResponse.language,
       page_references: pageRefs,
       context_chunks_used: aiResponse.context_chunks_used,
+      usage: {
+        remainingQuestionsThisMonth:
+          usageStatus.remainingQuestionsThisMonth - 1,
+      },
     });
   } catch (error) {
     console.error("Ask question error:", error);

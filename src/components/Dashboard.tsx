@@ -7,6 +7,7 @@ import PDFViewer from "./PDFViewer";
 import ChatInterface from "./ChatInterface";
 import PDFList from "./PDFList";
 import LanguageSwitcher from "./LanguageSwitcher";
+import SubscriptionStatus from "./SubscriptionStatus";
 import { LogOut, FileText, MessageSquare, Upload } from "lucide-react";
 
 interface PDF {
@@ -141,6 +142,9 @@ function Dashboard(): React.JSX.Element {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Subscription Status */}
+        <SubscriptionStatus />
+
         {activeTab === "upload" && (
           <div className="space-y-6">
             <div>
