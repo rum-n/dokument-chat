@@ -11,17 +11,12 @@ const nextConfig: NextConfig = {
   },
 
   // Handle file uploads
-  experimental: {
-    serverComponentsExternalPackages: ["pdf-parse", "formidable"],
-  },
+  serverExternalPackages: ["pdf-parse", "formidable"],
 
   // Environment variables
   env: {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
   },
-
-  // Build optimization
-  swcMinify: true,
 
   // Handle API routes
   async headers() {
