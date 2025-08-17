@@ -1,5 +1,5 @@
 import { authenticateRequest } from "../../../lib/services/auth";
-import { getUserPDFs } from "../../../lib/services/metadata";
+import { PDFDatabaseService } from "../../../lib/services/pdfDatabase";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -8,16 +8,16 @@ export default async function handler(req, res) {
 
   try {
     const user = await authenticateRequest(req);
-    const userPdfs = getUserPDFs(user.id);
+    const userPdfs = await PDFDatabaseService.getPDFsByUserId(user.id);
 
     const pdfList = userPdfs.map((pdf) => ({
-      pdf_id: pdf.pdf_id,
-      filename: pdf.filename,
-      total_pages: pdf.total_pages,
-      total_chunks: pdf.total_chunks,
-      status: pdf.status,
-      upload_date: pdf.upload_date,
-      file_size: pdf.file_size,
+      pdf_id: pdf.id,
+      filename: pdf.originalName,
+      total_pages: pdf.pageCount || 0,
+      total_chunks: pdf._count?.chunks || 0,
+      status: "processed",
+      upload_date: pdf.createdAt.toISOString(),
+      file_size: pdf.size,
     }));
 
     res.json({ pdfs: pdfList });

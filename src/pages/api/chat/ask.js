@@ -1,6 +1,6 @@
 import { authenticateRequest } from "../../../lib/services/auth";
 import aiService from "../../../lib/services/aiService";
-import { searchChunks } from "../../../lib/services/database";
+import { searchChunks, initQdrant } from "../../../lib/services/database";
 import subscriptionService from "../../../lib/services/subscriptionService";
 
 export default async function handler(req, res) {
@@ -10,6 +10,9 @@ export default async function handler(req, res) {
 
   try {
     const user = await authenticateRequest(req);
+
+    // Initialize Qdrant client
+    await initQdrant();
 
     // Check subscription limits for questions
     const usageStatus = await subscriptionService.getCurrentUsage(user.id);

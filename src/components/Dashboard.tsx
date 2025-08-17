@@ -6,9 +6,10 @@ import PDFUpload from "./PDFUpload";
 import PDFViewer from "./PDFViewer";
 import ChatInterface from "./ChatInterface";
 import PDFList from "./PDFList";
+import Profile from "./Profile";
 import LanguageSwitcher from "./LanguageSwitcher";
-import SubscriptionStatus from "./SubscriptionStatus";
-import { LogOut, FileText, MessageSquare, Upload } from "lucide-react";
+import UpgradeMessage from "./UpgradeMessage";
+import { LogOut, FileText, MessageSquare, Upload, User } from "lucide-react";
 
 interface PDF {
   pdf_id: string;
@@ -17,7 +18,7 @@ interface PDF {
   file_size: number;
 }
 
-type TabType = "upload" | "chat" | "pdfs";
+type TabType = "upload" | "chat" | "pdfs" | "profile";
 
 function Dashboard(): React.JSX.Element {
   const { user, logout } = useAuth();
@@ -136,15 +137,24 @@ function Dashboard(): React.JSX.Element {
               <FileText className="h-4 w-4 mr-2" />
               My PDFs
             </button>
+
+            <button
+              onClick={() => setActiveTab("profile")}
+              className={`py-4 px-1 border-b-2 font-medium text-sm flex items-center ${
+                activeTab === "profile"
+                  ? "border-primary-500 text-primary-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              }`}
+            >
+              <User className="h-4 w-4 mr-2" />
+              Profile
+            </button>
           </nav>
         </div>
       </div>
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Subscription Status */}
-        <SubscriptionStatus />
-
         {activeTab === "upload" && (
           <div className="space-y-6">
             <div>
@@ -161,20 +171,23 @@ function Dashboard(): React.JSX.Element {
         )}
 
         {activeTab === "chat" && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              <ChatInterface
-                selectedPDF={selectedPDF}
-                pdfs={pdfs}
-                onPDFSelect={setSelectedPDF}
-              />
-            </div>
-            <div className="lg:col-span-1">
-              <PDFViewer
-                selectedPDF={selectedPDF}
-                onPDFSelect={setSelectedPDF}
-                pdfs={pdfs}
-              />
+          <div className="space-y-6">
+            <UpgradeMessage />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <ChatInterface
+                  selectedPDF={selectedPDF}
+                  pdfs={pdfs}
+                  onPDFSelect={setSelectedPDF}
+                />
+              </div>
+              <div className="lg:col-span-1">
+                <PDFViewer
+                  selectedPDF={selectedPDF}
+                  onPDFSelect={setSelectedPDF}
+                  pdfs={pdfs}
+                />
+              </div>
             </div>
           </div>
         )}
@@ -194,6 +207,18 @@ function Dashboard(): React.JSX.Element {
               onPDFDeleted={handlePDFDeleted}
               onRefresh={fetchPDFs}
             />
+          </div>
+        )}
+
+        {activeTab === "profile" && (
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Profile</h2>
+              <p className="text-gray-600">
+                Manage your account settings and view subscription details.
+              </p>
+            </div>
+            <Profile />
           </div>
         )}
       </main>

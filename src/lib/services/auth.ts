@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { NextApiRequest, NextApiResponse } from "next";
 import { UserProfile } from "../models/User";
-import { UserService } from "./userService";
+import { UserService } from "./userService.prisma";
 import config from "../config";
 
 export interface AuthenticatedRequest extends NextApiRequest {

@@ -154,7 +154,7 @@ function ChatInterface({
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 h-[600px] flex flex-col">
       {/* Header */}
       <div className="p-4 border-b border-gray-200">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center">
             <MessageSquare className="h-5 w-5 text-primary-600 mr-2" />
             <h3 className="font-medium text-gray-900">Chat with AI</h3>
@@ -168,23 +168,47 @@ function ChatInterface({
           )}
         </div>
 
-        {pdfs.length > 0 && !selectedPDF && (
-          <div className="mt-2">
-            <select
-              className="w-full text-sm border border-gray-300 rounded px-2 py-1"
-              onChange={(e) => {
-                const pdf = pdfs.find((p) => p.pdf_id === e.target.value);
-                onPDFSelect(pdf || null);
-              }}
-              value=""
-            >
-              <option value="">Select a PDF to chat about...</option>
-              {pdfs.map((pdf) => (
-                <option key={pdf.pdf_id} value={pdf.pdf_id}>
-                  {pdf.filename}
+        {/* PDF Selection */}
+        {pdfs.length > 0 && (
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-gray-700">
+              {selectedPDF ? "Change PDF:" : "Select PDF to chat about:"}
+            </label>
+            <div className="relative">
+              <select
+                className={`w-full text-sm border rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors ${
+                  selectedPDF
+                    ? "border-green-300 bg-green-50"
+                    : "border-gray-300"
+                }`}
+                onChange={(e) => {
+                  const pdf = pdfs.find((p) => p.pdf_id === e.target.value);
+                  onPDFSelect(pdf || null);
+                }}
+                value={selectedPDF?.pdf_id || ""}
+              >
+                <option value="">
+                  {selectedPDF
+                    ? "Choose a different PDF..."
+                    : "Select a PDF to chat about..."}
                 </option>
-              ))}
-            </select>
+                {pdfs.map((pdf) => (
+                  <option key={pdf.pdf_id} value={pdf.pdf_id}>
+                    {pdf.filename}
+                  </option>
+                ))}
+              </select>
+              {selectedPDF && (
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                </div>
+              )}
+            </div>
+            {selectedPDF && (
+              <div className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded">
+                ✓ Ready to chat about "{selectedPDF.filename}"
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -198,6 +222,8 @@ function ChatInterface({
             <p className="text-sm">
               {selectedPDF
                 ? `Ask questions about "${selectedPDF.filename}" in Bulgarian or English`
+                : pdfs.length > 0
+                ? "Select a PDF from the dropdown above to start chatting"
                 : "Upload a PDF and start chatting about its content"}
             </p>
           </div>
@@ -267,19 +293,19 @@ function ChatInterface({
 
       {/* Input */}
       <div className="p-4 border-t border-gray-200">
-        <form onSubmit={handleSubmit} className="flex space-x-2">
+        <form onSubmit={handleSubmit} className="flex space-x-3">
           <input
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Ask a question in Bulgarian or English..."
-            className="flex-1 input-field"
+            placeholder="Ask a question..."
+            className="flex-1 input-field text-sm"
             disabled={loading}
           />
           <button
             type="submit"
             disabled={!inputValue.trim() || loading}
-            className="btn-primary flex items-center"
+            className="btn-primary flex items-center justify-center w-12 h-10 px-3"
           >
             <Send className="h-4 w-4" />
           </button>

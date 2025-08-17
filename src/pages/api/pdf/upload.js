@@ -1,14 +1,12 @@
-import { IncomingForm } from "formidable";
-import fs from "fs-extra";
-import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import { authenticateRequest } from "../../../lib/services/auth";
 import pdfService from "../../../lib/services/pdfService";
 import aiService from "../../../lib/services/aiService";
 import { storeChunks, initQdrant } from "../../../lib/services/database";
-import { addPDFMetadata } from "../../../lib/services/metadata";
+import { PDFDatabaseService } from "../../../lib/services/pdfDatabase";
 import appConfig from "../../../lib/config";
 import subscriptionService from "../../../lib/services/subscriptionService";
+import formidable from "formidable";
 
 export const config = {
   api: {
@@ -28,12 +26,7 @@ export default async function handler(req, res) {
     // Initialize database
     await initQdrant();
 
-    // Ensure upload directory exists
-    await fs.ensureDir(appConfig.upload.uploadDir);
-    console.log("Upload directory:", appConfig.upload.uploadDir);
-
-    const form = new IncomingForm({
-      uploadDir: appConfig.upload.uploadDir,
+    const form = formidable({
       maxFileSize: appConfig.upload.maxFileSizeMB * 1024 * 1024,
       keepExtensions: true,
       multiples: false,
@@ -66,6 +59,8 @@ export default async function handler(req, res) {
         // Debug file size
         console.log("File size in bytes:", fileSizeBytes);
         console.log("File size in MB:", fileSizeBytes / (1024 * 1024));
+        console.log("File object keys:", Object.keys(file));
+        console.log("File object:", JSON.stringify(file, null, 2));
 
         // Check file size limit
         if (
@@ -101,6 +96,8 @@ export default async function handler(req, res) {
           return res.status(400).json({ error: "Invalid file upload" });
         }
 
+        console.log("Using file path:", filePath);
+
         // Process PDF
         const result = await pdfService.processPDF(filePath, pdfId);
 
@@ -120,30 +117,40 @@ export default async function handler(req, res) {
           );
         }
 
+        // Store PDF in database first
+        const pdfData = {
+          filename: file.originalFilename || "uploaded_document.pdf",
+          originalName: file.originalFilename || "uploaded_document.pdf",
+          mimeType: file.mimetype || "application/pdf",
+          size: fileSizeBytes,
+          uploadPath: "processed", // Indicate file was processed, not stored locally
+          pageCount: result.total_pages,
+          userId: user.id,
+        };
+
+        const createdPDF = await PDFDatabaseService.createPDF(pdfData);
+
         // Generate embeddings for chunks
         const chunkTexts = validChunks.map((chunk) => chunk.text);
         const embeddings = await aiService.generateEmbeddings(chunkTexts);
 
-        // Store embeddings in database
-        await storeChunks(pdfId, validChunks, embeddings);
+        // Store embeddings in Qdrant with the database PDF ID
+        await storeChunks(createdPDF.id, validChunks, embeddings);
 
         // Record the upload in subscription usage
         await subscriptionService.recordPdfUpload(user.id);
 
-        // Store PDF metadata
-        addPDFMetadata({
-          pdf_id: pdfId,
-          filename: file.originalFilename,
-          total_pages: result.total_pages,
-          total_chunks: validChunks.length,
-          upload_date: new Date().toISOString(),
-          file_size: fileSizeBytes,
-          user_id: user.id,
-          status: "processed",
-        });
+        // Store PDF chunks in database
+        const chunkData = validChunks.map((chunk) => ({
+          chunkId: chunk.chunk_id,
+          pageNumber: chunk.page_number,
+          text: chunk.text,
+        }));
+
+        await PDFDatabaseService.createPDFChunks(createdPDF.id, chunkData);
 
         res.json({
-          pdf_id: pdfId,
+          pdf_id: createdPDF.id,
           filename: file.originalFilename,
           total_pages: result.total_pages,
           total_chunks: validChunks.length,
