@@ -11,9 +11,9 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "BGPDF AI - Bulgarian PDF Q&A Assistant",
+  title: "Dokument Chat - The Document Q&A Assistant",
   description:
-    "Upload PDFs and chat with AI in Bulgarian and English. Get intelligent answers with page references.",
+    "Upload PDFs and chat with AI. Get intelligent answers with page references.",
 };
 
 export default function RootLayout({

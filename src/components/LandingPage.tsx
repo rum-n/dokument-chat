@@ -8,19 +8,18 @@ import {
   Globe,
   Shield,
   Zap,
-  Users,
   ArrowRight,
-  CheckCircle,
-  BookOpen,
   Search,
 } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
 import { translations } from "../translations";
 import LanguageSwitcher from "./LanguageSwitcher";
+import { useRouter } from "next/navigation";
 
 const LandingPage = (): React.JSX.Element => {
   const { language } = useLanguage();
   const t = translations[language];
+  const router = useRouter();
 
   return (
     <div className="min-h-screen bg-white">
@@ -28,7 +27,7 @@ const LandingPage = (): React.JSX.Element => {
       <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
+            <div onClick={() => router.push('/')} className="flex items-center space-x-2 cursor-pointer">
               <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center shadow-lg">
                 <FileText className="w-5 h-5 text-white" />
               </div>
